@@ -1,0 +1,1 @@
+SELECT * FROM 区分コード WHERE 連番 = ? AND 削除F = '0'

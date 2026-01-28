@@ -1,0 +1,1 @@
+SELECT * FROM 映像記録 WHERE 連番 = ? AND ユーザID = ?

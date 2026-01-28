@@ -1,0 +1,1 @@
+SELECT `ID` FROM `ユーザ管理` WHERE `削除F` = '0' AND `ID` = ? AND `パスワード` = ?

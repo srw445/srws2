@@ -1,0 +1,13 @@
+-- ws.`ログイン履歴` definition
+
+CREATE TABLE `ログイン履歴` (
+  `連番` int NOT NULL AUTO_INCREMENT,
+  `ログイン日時` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ID` varchar(200) DEFAULT NULL,
+  `パスワード` varchar(200) DEFAULT NULL,
+  `結果` varchar(1) DEFAULT NULL,
+  `削除F` varchar(1) DEFAULT NULL,
+  `登録日時` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `更新日時` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`連番`)
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -1,0 +1,1 @@
+SELECT コード名 FROM 区分コード WHERE 区分コード = ? AND コード = ? AND 削除F = 0 LIMIT 1;

@@ -1,0 +1,1 @@
+select * from 読書記録 where 連番 = ? and 削除F = '0' and ユーザID = ?

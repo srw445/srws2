@@ -1,0 +1,1 @@
+SELECT * FROM 資産区分マスタ WHERE 資産区分コード = ? AND 削除F = '0'
