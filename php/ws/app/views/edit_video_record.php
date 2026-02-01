@@ -6,7 +6,7 @@
     <script src="/ws/vendor/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js"></script>
     <title>映像記録編集</title>
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-secondary">
     <h2>映像記録編集</h2>
     <div style="margin-bottom: 10px;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=video_records'">戻る</button>

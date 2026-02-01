@@ -1,4 +1,5 @@
-SELECT フィード
+SELECT フィード, 名称, 表示項目1
 FROM rssリーダー
 WHERE 削除F = '0'
-AND 連番 = 41;
+and 分類 = 0
+;

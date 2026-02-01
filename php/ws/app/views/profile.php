@@ -6,7 +6,7 @@
     <script src="/ws/vendor/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js"></script>
     <title>プロフィール</title>
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-secondary">
     <h2>プロフィール</h2>
     <p>ユーザー名: admin</p>
     <p>メール: admin@example.com</p>

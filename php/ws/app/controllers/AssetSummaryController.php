@@ -16,7 +16,9 @@ class AssetSummaryController {
         $assetRatios = AssetRatio::getAll($pdo, $historyNo);
         $assetRatioCountries = AssetRatioCountry::getAll($pdo, $historyNo);
         $assetRatioCashs = AssetRatioCash::getAll($pdo, $historyNo);
+        require_once __DIR__ . '/../models/AssetRatioAccount.php';
         $assetRatioScales = AssetRatioScale::getAll($pdo, $historyNo);
+        $assetRatioAccounts = AssetRatioAccount::getAll($pdo, $historyNo);
         include __DIR__ . '/../views/asset_summary.php';
     }
 }

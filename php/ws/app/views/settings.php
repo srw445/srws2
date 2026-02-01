@@ -6,7 +6,7 @@
     <script src="/ws/vendor/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js"></script>
     <title>設定</title>
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-secondary">
     <h2>設定</h2>
     <form action="?action=update_settings" method="post">
         <label for="email">メール:</label>

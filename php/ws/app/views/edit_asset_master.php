@@ -6,7 +6,7 @@
     <script src="/ws/vendor/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js"></script>
     <title>資産マスタ編集</title>
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-secondary">
     <h2>資産マスタ編集</h2>
     <div style="margin-bottom: 10px;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_master'">戻る</button>

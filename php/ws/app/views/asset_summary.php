@@ -5,12 +5,12 @@
     <title>資産管理</title>
     <link href="/ws/vendor/bootstrap-5.3.0-dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-secondary">
     <h2>資産管理</h2>
     <div style="margin-bottom: 10px;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=main'">戻る</button>
     </div>
-    <div class="mt-4" style="max-width:1200px;">
+    <div class="mt-4" style="max-width:1600px;">
         <h5>資産集計</h5>
     </div>
     <div style="max-height: 200px; overflow-y: auto;">
@@ -68,7 +68,7 @@
         </tbody>
     </table>
     </div>
-    <div class="mt-4" style="max-width:1200px;">
+    <div class="mt-4" style="max-width:1600px;">
         <h5>資産明細</h5>
         <div style="max-height:600px; overflow-y:auto;">
             <table class="table table-hover table-sm" style="margin-bottom:0;">
@@ -85,6 +85,7 @@
                     <th>国内外区分</th>
                     <th>通貨区分</th>
                     <th>長短区分</th>
+                    <th>口座区分</th>
                 </tr>
             </thead>
             <tbody>
@@ -102,17 +103,18 @@
                             <td><?= htmlspecialchars($row['国内外区分コード名']) ?></td>
                             <td><?= htmlspecialchars($row['通貨区分コード名']) ?></td>
                             <td><?= htmlspecialchars($row['長短区分コード名']) ?></td>
+                            <td><?= htmlspecialchars($row['口座区分コード名'] ?? '') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr><td colspan="9">データがありません</td></tr>
+                    <tr><td colspan="12">データがありません</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>
         </div>
     </div>
     </div>
-    <div class="mt-4" style="max-width:1200px;">
+    <div class="mt-4" style="max-width:1600px;">
         <h5>資産推移</h5>
         <canvas id="profitChart" width="1200" height="300"></canvas>
     </div>
@@ -152,6 +154,15 @@
                 <?php endif; ?>
             </div>
             <canvas id="scaleRatioChart" width="350" height="200"></canvas>
+        </div>
+        <div style="max-width:400px;">
+            <h5>口座区分割合</h5>
+            <div style="margin-bottom: 4px; font-size: 1rem; color: #555;">
+                <?php if (!empty($assetRatioAccounts) && isset($assetRatioAccounts[0]['履歴番号'])): ?>
+                    履歴番号: <?= htmlspecialchars($assetRatioAccounts[0]['履歴番号']) ?>
+                <?php endif; ?>
+            </div>
+            <canvas id="accountRatioChart" width="350" height="200"></canvas>
         </div>
     </div>
 
@@ -320,6 +331,43 @@
                     datasets: [{
                         data: scaleData,
                         backgroundColor: scaleColors,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.chart._metasets[0].total || context.dataset.data.reduce((a,b)=>a+b,0);
+                                    const percent = total ? (value / total * 100).toFixed(1) : 0;
+                                    return `${label}: ${value.toLocaleString()}円 (${percent}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 口座区分割合 円グラフ
+        let accountRaw = <?php echo json_encode($assetRatioAccounts ?? []); ?>;
+        const accountLabels = accountRaw.map(row => row['口座区分コード名'] || row['口座区分名'] || row['口座区分'] || '');
+        const accountData = accountRaw.map(row => Number(row['金額']));
+        const accountColors = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc949', '#af7aa1', '#ff9da7', '#9c755f', '#bab0ab'];
+        if (accountLabels.length > 0) {
+            const ctx6 = document.getElementById('accountRatioChart').getContext('2d');
+            new Chart(ctx6, {
+                type: 'pie',
+                data: {
+                    labels: accountLabels,
+                    datasets: [{
+                        data: accountData,
+                        backgroundColor: accountColors,
                     }]
                 },
                 options: {

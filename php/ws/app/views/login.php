@@ -6,7 +6,7 @@
     <script src="/ws/vendor/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js"></script>
     <title>ログイン画面</title>
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-secondary">
     <h2>ログイン</h2>
     <form action="?action=authenticate" method="post">
         <table>
