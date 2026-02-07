@@ -32,14 +32,10 @@ class RssFeedController {
             $xml = @simplexml_load_file($url);
             if (!$xml) return [];
             $items = [];
+            // RSS 2.0
             if (isset($xml->channel->item)) {
                 foreach ($xml->channel->item as $item) {
-                    $content = '';
-                    if ($displayField === 'description') {
-                        $content = (string)$item->description;
-                    } else {
-                        $content = (string)$item->title;
-                    }
+                    $content = ($displayField === 'description') ? (string)$item->description : (string)$item->title;
                     $items[] = [
                         'content' => $content,
                         'title' => (string)$item->title,
@@ -48,24 +44,38 @@ class RssFeedController {
                         'pubDate' => (string)$item->pubDate
                     ];
                 }
-            } elseif (isset($xml->entry)) {
+            }
+            // Atom形式
+            elseif (isset($xml->entry)) {
                 foreach ($xml->entry as $item) {
-                    $content = '';
-                    if ($displayField === 'description') {
-                        $content = (string)$item->summary;
-                    } else {
-                        $content = (string)$item->title;
-                    }
-                    $link = '';
-                    if (isset($item->link)) {
-                        $link = (string)$item->link['href'];
-                    }
+                    $content = ($displayField === 'description') ? (string)$item->summary : (string)$item->title;
+                    $link = isset($item->link) ? (string)$item->link['href'] : '';
                     $items[] = [
                         'content' => $content,
                         'title' => (string)$item->title,
                         'link' => $link,
                         'description' => (string)$item->summary,
                         'pubDate' => (string)$item->updated
+                    ];
+                }
+            }
+            // RDF形式（RSS 1.0）
+            elseif (isset($xml->item)) {
+                foreach ($xml->item as $item) {
+                    $content = ($displayField === 'description') ? (string)$item->description : (string)$item->title;
+                    // pubDateはdc:dateやdate等で取得
+                    $pubDate = '';
+                    if (isset($item->children('http://purl.org/dc/elements/1.1/')->date)) {
+                        $pubDate = (string)$item->children('http://purl.org/dc/elements/1.1/')->date;
+                    } elseif (isset($item->date)) {
+                        $pubDate = (string)$item->date;
+                    }
+                    $items[] = [
+                        'content' => $content,
+                        'title' => (string)$item->title,
+                        'link' => (string)$item->link,
+                        'description' => (string)$item->description,
+                        'pubDate' => $pubDate
                     ];
                 }
             }
