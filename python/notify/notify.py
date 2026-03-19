@@ -46,7 +46,15 @@ def notify(message):
 
 
 def main():
-    config_list = load_config()
+    config_data = load_config()
+    # config_dataがリストの場合は先頭要素を使う
+    if isinstance(config_data, list):
+        config_data = config_data[0]
+    if not isinstance(config_data, dict) or "schedule" not in config_data:
+        error_msg = "設定ファイルに'schedule'キーがありません。config.jsonの形式を確認してください。"
+        print(error_msg)
+        write_log(error_msg)
+        sys.exit(1)
     days_map = {
         0: "Monday",
         1: "Tuesday",
@@ -61,8 +69,11 @@ def main():
         current_time = now.strftime("%H:%M")
         today = days_map[now.weekday()]
         notified = False
-        for config in config_list:
-            if today in config["days"] and current_time == config["time"]:
+        for config in config_data["schedule"]:
+            days = config["days"]
+            # "Everyday"が含まれていれば毎日通知
+            is_everyday = "Everyday" in days
+            if (is_everyday or today in days) and current_time == config["time"]:
                 notify(config["message"])
                 notified = True
         if notified:

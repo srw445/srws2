@@ -1,0 +1,14 @@
+{
+    "schedule":[
+        {
+            "up": "Scene_Change01-1(Up).mp3",
+            "down": "Scene_Change01-2(Down).mp3"
+        }
+    ],
+    "resources":[
+        {
+            "up": "Scene_Change01-1(Up).mp3",
+            "down": "Scene_Change01-2(Down).mp3"
+        }
+    ]
+}

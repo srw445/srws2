@@ -53,4 +53,4 @@ pyinstaller --onefile notify.py
 - exe化した場合、config.jsonとnotify.logはexeと同じフォルダに置いてください。
 
 ## 動作環境
-- Python 3.8 
+- Python 3.6.8

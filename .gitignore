@@ -6,3 +6,4 @@ python/notify/build/
 python/notify/config.json
 python/notify/notify.log
 python/notify/notify.spec
+python/notify/resources/
