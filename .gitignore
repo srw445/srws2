@@ -1,9 +1,15 @@
 php/ws/config/database.php
 php/ws/public/php_errors.log
 php/ws/vendor/
-python/notify/__pycache__/
+
 python/notify/build/
 python/notify/config.json
 python/notify/notify.log
 python/notify/notify.spec
 python/notify/resources/
+
+python/testcode/src/settings.json
+python/testcode/tests/result.txt
+
+*.pyc
+**/__pycache__/
