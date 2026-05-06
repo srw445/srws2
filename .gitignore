@@ -8,8 +8,9 @@ python/notify/notify.log
 python/notify/notify.spec
 python/notify/resources/
 
-python/testcode/src/settings.json
 python/testcode/tests/result.txt
 
 *.pyc
+settings.json
 **/__pycache__/
+**/chromedriver-win64/
