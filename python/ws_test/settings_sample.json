@@ -1,4 +1,9 @@
 {
-    "chromedriver_path": "C:\\GitHub\\xxxxx\\chromedriver.exe",
-    "test_url": "http://localhost/ws/public/"
+    "chromedriver_path": "C:\\xxxxx\\GitHub\\chromedriver.exe",
+    "test_url": "http://localhost/ws/public/",
+    "db_host": "localhost",
+    "db_port": 1234,
+    "db_user": "user",
+    "db_pass": "password",
+    "db_name": "testdb"
 }

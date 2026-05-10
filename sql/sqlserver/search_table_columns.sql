@@ -15,8 +15,7 @@ inner join sys.columns as c
 on t.object_id = c.object_id
 where 1 = 1
 and t.name like @name
-and c.name like '%'
-;
+and c.name like '%';
 
 /*
 -- バックアップは除く

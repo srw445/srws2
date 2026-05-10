@@ -1,0 +1,1 @@
+DELETE FROM `ユーザ管理` WHERE ID='test';

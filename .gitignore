@@ -10,6 +10,8 @@ python/notify/resources/
 
 python/testcode/tests/result.txt
 
+python/ws_test/results/
+
 *.pyc
 settings.json
 **/__pycache__/

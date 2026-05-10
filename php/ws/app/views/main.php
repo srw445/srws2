@@ -16,9 +16,14 @@
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=kubun_codes'">区分コードマスタ</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_kubun_master'">資産区分マスタ</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_master'">資産マスタ</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=logout'">ログアウト</button>
+        <!-- ログアウトボタンは一番下に移動 -->
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=rss_feed'">RSSリーダー</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_summary'">資産管理</button>
+    </div>
+    <!-- ログアウトボタンを一番下に配置 -->
+    <div class="mt-5 d-flex justify-content-start">
+        <button type="button" class="btn btn-primary mt-3" onclick="location.href='?action=logout'">ログアウト</button>
+    </div>
     </div>
 </body>
 </html>
