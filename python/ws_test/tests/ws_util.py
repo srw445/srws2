@@ -3,6 +3,7 @@ import pymysql
 import json
 import os
 from PIL import Image, ImageDraw, ImageFont
+from selenium.webdriver.chrome.options import Options
 
 def get_db_settings():
     """データベース接続設定を取得"""
@@ -16,6 +17,25 @@ def get_db_settings():
         'password': settings.get('db_pass'),
         'database': settings.get('db_name'),
     }
+
+def get_chrome_options():
+    """テスト用Chrome Optionsを返す"""
+    options = Options()
+    # options.add_argument('--headless')  # 画面非表示で実行したい場合は有効化
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    # パスワード自動入力プロンプト抑制
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_argument('--disable-infobars')
+    options.add_argument('--disable-save-password-bubble')
+    # パスワード保存アラートを無効化
+    prefs = {
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False,
+        "profile.password_manager_leak_detection": False
+    }
+    options.add_experimental_option("prefs", prefs)
+    return options
 
 def execute_sql_file(sql_file_path):
     """SQLファイルを実行"""
@@ -75,6 +95,26 @@ def export_sql_to_csv(sql_file_path, script_name, evidence_no):
         conn.close()
     print(f'CSV出力: {csv_path}')
     return evidence_no + 1
+
+def get_select_count_from_sqlfile(sql_file_path):
+    """SQLファイルのSELECT件数を返す"""
+    db_conf = get_db_settings()
+    conn = pymysql.connect(
+        host=db_conf['host'],
+        port=db_conf['port'],
+        user=db_conf['user'],
+        password=db_conf['password'],
+        database=db_conf['database'],
+        charset='utf8mb4',
+        autocommit=True
+    )
+    with open(sql_file_path, encoding='utf-8') as f:
+        sql = f.read().strip().rstrip(';')
+    with conn.cursor() as cursor:
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+    conn.close()
+    return len(rows)
 
 def save_screenshot(driver, script_name, evidence_no, label=None, comment=None):
     """

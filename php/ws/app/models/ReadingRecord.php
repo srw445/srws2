@@ -74,6 +74,7 @@ class ReadingRecord {
             $sql = $this->loadSql('insert_reading_record.sql');
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
+                $data['ユーザID'],
                 $data['タイトル'],
                 $data['作者'],
                 $data['出版社'],
@@ -86,10 +87,23 @@ class ReadingRecord {
                 $data['読了日'],
                 $data['表紙ファイル名'],
                 $data['備考'],
-                $data['評価'],
-                $data['ユーザID']
+                $data['評価']
             ]);
             return $pdo->lastInsertId();
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function deleteReadingRecord($id) {
+        try {
+            $pdo = Database::getInstance();
+            $sql = $this->loadSql('delete_reading_record.sql');
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$id]);
+            return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             return $e->getMessage();
         } catch (Exception $e) {

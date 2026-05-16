@@ -1,18 +1,25 @@
+"""
+test_00101_login.py
+「ログイン画面」テストコード
+
+【1-1】ID、パスワードが一致する場合、ログインできること
+【1-2】ID、パスワードが一致しない場合、ログインできないこと
+"""
+
 import json
 import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
 import time
 import ws_util
-from ws_util import export_sql_to_csv
 
 # エビデンス番号
 evidence_no = 1
 # テストコード名
-script_name = os.path.splitext(os.path.basename(__file__))[0]  # 例: test_001_login
+script_name = os.path.splitext(os.path.basename(__file__))[0]  # 例: test_00101_login
 # コメント
 comment = ''
 
@@ -35,21 +42,7 @@ def test_code():
     TEST_URL = settings.get('test_url')
 
     # WebDriver起動
-    options = Options()
-    # options.add_argument('--headless')  # 画面非表示で実行したい場合は有効化
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    # パスワード自動入力プロンプト抑制
-    options.add_argument('--disable-blink-features=AutomationControlled')
-    options.add_argument('--disable-infobars')
-    options.add_argument('--disable-save-password-bubble')
-    # パスワード保存アラートを無効化
-    prefs = {
-        "credentials_enable_service": False,
-        "profile.password_manager_enabled": False,
-        "profile.password_manager_leak_detection": False
-    }
-    options.add_experimental_option("prefs", prefs)
+    options = ws_util.get_chrome_options()
     service = Service(CHROMEDRIVER_PATH)
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(TEST_URL)
@@ -144,10 +137,11 @@ def before():
     """事前処理"""
     global evidence_no
     print('before() 開始')
-    sql_path = os.path.join(os.path.dirname(__file__), '../sqls/test_001_login_01.sql')
+    # ユーザ管理追加
+    sql_path = os.path.join(os.path.dirname(__file__), '../sqls/test_00101_login_01.sql')
     ws_util.execute_sql_file(sql_path)
-    # CSV出力
-    sql_path = os.path.join(os.path.dirname(__file__), '../sqls/test_001_login_03.sql')
+    # 追加データ確認(CSV出力)
+    sql_path = os.path.join(os.path.dirname(__file__), '../sqls/test_00101_login_03.sql')
     evidence_no = ws_util.export_sql_to_csv(sql_path, script_name, evidence_no)
     print('before() 完了')
 
@@ -155,7 +149,8 @@ def after():
     """事後処理"""
     global evidence_no
     print('after() 開始')
-    sql_path = os.path.join(os.path.dirname(__file__), '../sqls/test_001_login_02.sql')
+    # ユーザ管理削除
+    sql_path = os.path.join(os.path.dirname(__file__), '../sqls/test_00101_login_02.sql')
     ws_util.execute_sql_file(sql_path)
     print('after() 完了')
 

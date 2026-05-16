@@ -41,6 +41,7 @@ require_once '../app/controllers/AssetSummaryController.php';
     'update_reading_record' => [ReadingController::class, 'update'],
     'add_reading_record' => [ReadingController::class, 'add'],
     'insert_reading_record' => [ReadingController::class, 'insert'],
+    'delete_reading_record' => [ReadingController::class, 'delete_reading_record'],
     'video_records' => [VideoController::class, 'index'],
     'add_video_record' => [VideoController::class, 'add'],
     'edit_video_record' => [VideoController::class, 'edit'],

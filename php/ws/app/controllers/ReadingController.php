@@ -113,5 +113,25 @@ class ReadingController {
             echo '<a href="?action=reading_records">戻る</a>';
         }
     }
+    public function delete_reading_record() {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            header('Location: ?action=reading_records');
+            exit;
+        }
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        if ($id <= 0) {
+            header('Location: ?action=reading_records');
+            exit;
+        }
+        $readingRecordModel = new ReadingRecord();
+        $result = $readingRecordModel->deleteReadingRecord($id);
+        if ($result === true) {
+            header('Location: ?action=reading_records');
+            exit;
+        } else {
+            echo "削除に失敗しました: $result";
+            echo '<a href="?action=reading_records">戻る</a>';
+        }
+    }
 }
 ?>

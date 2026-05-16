@@ -60,5 +60,11 @@
             </td></tr>
         </table>
     </form>
+    <div style="margin-top: 30px;">
+        <form id="deleteForm" action="?action=delete_reading_record" method="post" style="display:inline;">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($record['連番']); ?>">
+            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('本当に削除しますか？');">削除</button>
+        </form>
+    </div>
 </body>
 </html>
