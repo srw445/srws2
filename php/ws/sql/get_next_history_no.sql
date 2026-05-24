@@ -1,0 +1,1 @@
+SELECT IFNULL(MAX(履歴番号),0)+1 AS next_no FROM 資産管理明細 WHERE 削除F=0;

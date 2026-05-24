@@ -54,6 +54,8 @@ require_once '../app/controllers/AssetSummaryController.php';
     'insert_kubun_code' => [KubunCodeController::class, 'insert'],
     'rss_feed' => [RssFeedController::class, 'index'],
     'asset_summary' => [AssetSummaryController::class, 'index'],
+    'import_asset_file' => [AssetSummaryController::class, 'import_asset_file'],
+    'delete_asset_manager' => [AssetSummaryController::class, 'delete_asset_manager'],
 ];
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';

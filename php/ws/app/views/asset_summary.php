@@ -6,14 +6,22 @@
     <link href="/ws/vendor/bootstrap-5.3.0-dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-body-secondary">
+    <?php if (!empty($_SESSION['asset_import_error'])): ?>
+        <div class="alert alert-danger" role="alert"><?php echo htmlspecialchars($_SESSION['asset_import_error']); unset($_SESSION['asset_import_error']); ?></div>
+    <?php endif; ?>
     <h2>資産管理</h2>
-    <div style="margin-bottom: 10px;">
+    <div style="margin-bottom: 10px; display: flex; gap: 8px; align-items: center;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=main'">戻る</button>
+        <form id="importForm" action="?action=import_asset_file" method="post" enctype="multipart/form-data" style="display:inline;">
+            <label for="importFile" class="btn btn-outline-success mb-0">取込
+                <input type="file" id="importFile" name="import_file" style="display:none;" onchange="document.getElementById('importForm').submit();">
+            </label>
+        </form>
     </div>
     <div class="mt-4" style="max-width:1600px;">
         <h5>資産集計</h5>
     </div>
-    <div style="max-height: 200px; overflow-y: auto;">
+    <div style="max-height: 250px; overflow-y: auto;">
     <table class="table table-hover table-sm" style="margin-bottom:0;">
         <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
             <tr>
@@ -26,6 +34,8 @@
                         $displayCols[] = $col;
                         echo '<th>' . htmlspecialchars($col) . '</th>';
                     }
+                    // 削除ボタン用の列
+                    echo '<th></th>';
                 }
                 ?>
             </tr>
@@ -60,6 +70,12 @@
                                 ?>
                             </td>
                         <?php endforeach; ?>
+                        <td>
+                            <form method="post" action="?action=delete_asset_manager" style="display:inline; margin:0;" onsubmit="return confirm('本当に削除しますか？');">
+                                <input type="hidden" name="history_no" value="<?= htmlspecialchars($row['履歴番号']) ?>">
+                                <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -75,6 +91,7 @@
                 <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
                     <tr>
                     <th>年月日</th>
+                    <th>資産区分コード</th>
                     <th>資産区分略名</th>
                     <th>資産コード</th>
                     <th>資産略名</th>
@@ -93,6 +110,7 @@
                     <?php foreach ($assetDetails as $row): ?>
                         <tr>
                             <td><?= htmlspecialchars($row['年月日']) ?></td>
+                            <td><?= htmlspecialchars($row['資産区分コード']) ?></td>
                             <td><?= htmlspecialchars($row['資産区分略名']) ?></td>
                             <td><?= htmlspecialchars($row['資産コード']) ?></td>
                             <td><?= htmlspecialchars($row['資産略名']) ?></td>
