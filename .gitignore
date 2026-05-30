@@ -1,3 +1,6 @@
+csharp/WpfApp1/Setup1/Debug/
+csharp/WpfApp1/Setup1/Release/
+
 php/ws/config/database.php
 php/ws/public/php_errors.log
 php/ws/vendor/
@@ -13,7 +16,11 @@ python/testcode/tests/result.txt
 
 python/ws_test/results/
 
+*.user
 *.pyc
 settings.json
+**/.vs/
+**/bin/
+**/obj/
 **/__pycache__/
 **/chromedriver-win64/

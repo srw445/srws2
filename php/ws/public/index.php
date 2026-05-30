@@ -47,6 +47,7 @@ require_once '../app/controllers/AssetSummaryController.php';
     'edit_video_record' => [VideoController::class, 'edit'],
     'insert_video_record' => [VideoController::class, 'insert'],
     'update_video_record' => [VideoController::class, 'update'],
+    'delete_video_record' => [VideoController::class, 'delete_video_record'],
     'kubun_codes' => [KubunCodeController::class, 'index'],
     'edit_kubun_code' => [KubunCodeController::class, 'edit'],
     'update_kubun_code' => [KubunCodeController::class, 'update'],

@@ -2,6 +2,7 @@
 
 CREATE TABLE `映像記録` (
   `連番` int NOT NULL AUTO_INCREMENT,
+  `ユーザID` varchar(200) DEFAULT NULL,
   `年月日` date DEFAULT NULL,
   `タイトル` varchar(200) DEFAULT NULL,
   `監督` varchar(200) DEFAULT NULL,
@@ -19,6 +20,5 @@ CREATE TABLE `映像記録` (
   `削除F` varchar(1) DEFAULT NULL,
   `登録日時` datetime DEFAULT CURRENT_TIMESTAMP,
   `更新日時` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ユーザID` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`連番`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=283 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

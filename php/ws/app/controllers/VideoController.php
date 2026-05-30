@@ -124,6 +124,29 @@ class VideoController {
         }
     }
 
-    // updateは後で実装
+    public function delete_video_record() {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST" || !isset($_POST['id'])) {
+            header('Location: ?action=video_records');
+            exit;
+        }
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: login.php');
+            exit;
+        }
+        $id = (int)$_POST['id'];
+        if ($id <= 0) {
+            header('Location: ?action=video_records');
+            exit;
+        }
+        $pdo = Database::getInstance();
+        $sql = file_get_contents(__DIR__ . '/../../../ws/sql/delete_video_record.sql');
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+        header('Location: ?action=video_records');
+        exit;
+    }
 }
 ?>

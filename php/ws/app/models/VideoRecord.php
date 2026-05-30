@@ -44,6 +44,7 @@ class VideoRecord {
             $sql = $this->loadSql('insert_video_record.sql');
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
+                $data['ユーザID'],
                 $data['年月日'],
                 $data['タイトル'],
                 $data['監督'],
@@ -52,8 +53,7 @@ class VideoRecord {
                 $data['映画館'],
                 $data['評価'],
                 $data['備考'],
-                '0',
-                $data['ユーザID']
+                '0'
             ]);
             return $pdo->lastInsertId();
         } catch (PDOException $e) {
