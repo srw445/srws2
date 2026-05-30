@@ -118,8 +118,15 @@ def test_code():
         comment = '主演入力'
         evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
 
-        # 映像区分入力
+        # 映像区分選択肢表示
         select_elem = driver.find_element(By.NAME, "映像区分")
+        select_elem.click()
+        time.sleep(1)
+        comment = '映像区分選択肢'
+        evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
+
+        # 映像区分入力
+        # select_elem = driver.find_element(By.NAME, "映像区分")
         select = Select(select_elem)
         select.select_by_visible_text("洋画")
         time.sleep(1)
@@ -134,8 +141,15 @@ def test_code():
         comment = '映画館入力'
         evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
 
-        # 評価入力
+        # 評価選択肢表示
         select_elem = driver.find_element(By.NAME, "評価")
+        select_elem.click()
+        time.sleep(1)
+        comment = '評価選択肢'
+        evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
+
+        # 評価入力
+        # select_elem = driver.find_element(By.NAME, "評価")
         select = Select(select_elem)
         select.select_by_visible_text("★☆☆☆☆")
         time.sleep(1)

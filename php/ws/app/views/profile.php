@@ -7,6 +7,7 @@
     <title>プロフィール</title>
 </head>
 <body class="bg-body-secondary">
+    <?php include __DIR__.'/login_user.php'; ?>
     <h2>プロフィール</h2>
     <p>ユーザー名: admin</p>
     <p>メール: admin@example.com</p>

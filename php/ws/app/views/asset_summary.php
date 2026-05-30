@@ -6,6 +6,7 @@
     <link href="/ws/vendor/bootstrap-5.3.0-dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-body-secondary">
+    <?php include __DIR__.'/login_user.php'; ?>
     <?php if (!empty($_SESSION['asset_import_error'])): ?>
         <div class="alert alert-danger" role="alert"><?php echo htmlspecialchars($_SESSION['asset_import_error']); unset($_SESSION['asset_import_error']); ?></div>
     <?php endif; ?>

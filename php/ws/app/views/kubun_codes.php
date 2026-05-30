@@ -20,6 +20,7 @@ function sort_link_kubun($label, $column, $currentSort, $currentOrder) {
     <title>区分コードマスタ</title>
 </head>
 <body class="bg-body-secondary">
+    <?php include __DIR__.'/login_user.php'; ?>
     <h2>区分コードマスタ</h2>
     <div style="margin-bottom: 10px;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=main'">戻る</button>

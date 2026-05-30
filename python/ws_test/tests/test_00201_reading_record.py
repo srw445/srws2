@@ -110,8 +110,15 @@ def test_code():
         comment = '出版社入力'
         evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
 
-        # 形式入力
+        # 形式選択肢表示
         select_elem = driver.find_element(By.NAME, "形式")
+        select_elem.click()
+        time.sleep(1)
+        comment = '形式選択肢'
+        evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
+
+        # 形式入力
+        # select_elem = driver.find_element(By.NAME, "形式")
         select = Select(select_elem)
         select.select_by_visible_text("文庫")
         time.sleep(1)
@@ -174,8 +181,15 @@ def test_code():
         comment = '備考入力'
         evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
 
-        # 評価入力
+        # 評価選択肢表示
         select_elem = driver.find_element(By.NAME, "評価")
+        select_elem.click()
+        time.sleep(1)
+        comment = '評価選択肢'
+        evidence_no = ws_util.save_screenshot(driver, script_name, evidence_no, comment=comment)
+
+        # 評価入力
+        # select_elem = driver.find_element(By.NAME, "評価")
         select = Select(select_elem)
         select.select_by_visible_text("★☆☆☆☆")
         time.sleep(1)

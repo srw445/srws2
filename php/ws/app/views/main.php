@@ -7,6 +7,15 @@
     <title>メインメニュー</title>
 </head>
 <body class="bg-body-secondary">
+    <?php include __DIR__.'/login_user.php'; ?>
+    <?php
+    require_once __DIR__.'/../models/Message.php';
+    $userId = $_SESSION['user_id'] ?? '';
+    $msg = Message::getRandomMessage($userId);
+    if ($msg) {
+        echo '<div class="alert alert-info mt-2 mb-3" style="font-size:1.1em;">'.nl2br(htmlspecialchars($msg)).'</div>';
+    }
+    ?>
     <h2>メインメニュー</h2>
     <div class="d-flex flex-column gap-2" style="max-width: 300px;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=profile'">プロフィール</button>

@@ -7,6 +7,7 @@
     <title>資産マスタ編集</title>
 </head>
 <body class="bg-body-secondary">
+    <?php include __DIR__.'/login_user.php'; ?>
     <h2>資産マスタ編集</h2>
     <div style="margin-bottom: 10px;">
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_master'">戻る</button>

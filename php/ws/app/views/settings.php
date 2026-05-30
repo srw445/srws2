@@ -7,6 +7,7 @@
     <title>設定</title>
 </head>
 <body class="bg-body-secondary">
+    <?php include __DIR__.'/login_user.php'; ?>
     <h2>設定</h2>
     <form action="?action=update_settings" method="post">
         <label for="email">メール:</label>
