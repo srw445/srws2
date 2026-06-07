@@ -22,6 +22,7 @@ class ReadingController {
         $readingRecordModel = new ReadingRecord();
         $userId = $_SESSION['user_id'] ?? '';
         $records = $readingRecordModel->getReadingRecords($userId, $sort, $order);
+        $totals = $readingRecordModel->getReadingRecordTotal($userId);
         // ビューにデータを渡す
         include '../app/views/reading_records.php';
     }

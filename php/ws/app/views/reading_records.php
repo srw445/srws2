@@ -20,7 +20,13 @@
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=main'">戻る</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=add_reading_record'">追加</button>
     </div>
-    <div style="max-height: 700px; overflow-y: auto; margin-top: 50px;">
+    <?php $records = $records ?? []; $totals = $totals ?? []; ?>
+    <div class="mb-3 d-flex flex-wrap gap-3 align-items-center">
+        <div>読書合計: <strong><?= htmlspecialchars($totals['読書合計'] ?? 0) ?></strong></div>
+        <div>ページ数合計: <strong><?= number_format((int)($totals['ページ数合計'] ?? 0)) ?></strong></div>
+        <div>定価合計: <strong><?= number_format((int)($totals['定価合計'] ?? 0)) ?></strong></div>
+    </div>
+    <div style="max-height: 700px; overflow-y: auto; margin-top: 30px;">
     <table class="table table-hover table-sm" style="width: 100%;">
         <thead style="position: sticky; top: 0; background: white;">
             <tr>

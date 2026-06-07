@@ -25,6 +25,20 @@ class ReadingRecord {
         }
     }
 
+    public function getReadingRecordTotal($userId) {
+        try {
+            $pdo = Database::getInstance();
+            $sql = $this->loadSql('get_reading_record_total.sql');
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$userId]);
+            return $stmt->fetch() ?: [];
+        } catch (PDOException $e) {
+            return [];
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
     public function getReadingRecordById($id, $userId) {
         try {
             $pdo = Database::getInstance();

@@ -18,15 +18,12 @@
     ?>
     <h2>メインメニュー</h2>
     <div class="d-flex flex-column gap-2" style="max-width: 300px;">
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=profile'">プロフィール</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=settings'">設定</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=reading_records'">読書記録</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=video_records'">映像記録</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=kubun_codes'">区分コードマスタ</button>
+        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=rss_feed'">RSSリーダー</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_kubun_master'">資産区分マスタ</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_master'">資産マスタ</button>
-        <!-- ログアウトボタンは一番下に移動 -->
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=rss_feed'">RSSリーダー</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_summary'">資産管理</button>
     </div>
     <!-- ログアウトボタンを一番下に配置 -->

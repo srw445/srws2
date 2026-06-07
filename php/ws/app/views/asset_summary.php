@@ -135,7 +135,16 @@
     </div>
     <div class="mt-4" style="max-width:1600px;">
         <h5>資産推移</h5>
-        <canvas id="profitChart" width="1200" height="300"></canvas>
+        <div class="d-flex flex-column" style="gap: 16px;">
+            <div>
+                <h6>金額合計</h6>
+                <canvas id="profitChart" width="1200" height="260"></canvas>
+            </div>
+            <div>
+                <h6>評価損益合計</h6>
+                <canvas id="profitLossChart" width="1200" height="260"></canvas>
+            </div>
+        </div>
     </div>
     <div class="mt-4 d-flex" style="gap: 32px;">
         <div style="max-width:400px;">
@@ -191,15 +200,17 @@
     let chartRaw = <?php echo json_encode(array_map(function($row){
         return [
             '履歴番号' => $row['履歴番号'],
-            '金額_合計' => (float)($row['金額_合計'] ?? 0)
+            '金額_合計' => (float)($row['金額_合計'] ?? 0),
+            '評価損益_合計' => (float)($row['評価損益_合計'] ?? 0)
         ];
     }, $assets ?? [])); ?>;
     chartRaw.sort((a, b) => a['履歴番号'] - b['履歴番号']);
     const chartLabels = chartRaw.map(row => row['履歴番号']);
     const chartData = chartRaw.map(row => row['金額_合計']);
+    const chartProfitData = chartRaw.map(row => row['評価損益_合計']);
     if (chartLabels.length > 0) {
-        const ctx = document.getElementById('profitChart').getContext('2d');
-        new Chart(ctx, {
+        const amountCtx = document.getElementById('profitChart').getContext('2d');
+        new Chart(amountCtx, {
             type: 'line',
             data: {
                 labels: chartLabels,
@@ -208,7 +219,7 @@
                     data: chartData,
                     borderColor: 'rgba(54, 162, 235, 1)',
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    fill: true,
+                    fill: false,
                     tension: 0.2
                 }]
             },
@@ -218,6 +229,30 @@
                 scales: {
                     x: { title: { display: true, text: '履歴番号' }, reverse: false },
                     y: { title: { display: true, text: '金額合計' } }
+                }
+            }
+        });
+
+        const profitCtx = document.getElementById('profitLossChart').getContext('2d');
+        new Chart(profitCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: '評価損益合計',
+                    data: chartProfitData,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: false,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { title: { display: true, text: '履歴番号' }, reverse: false },
+                    y: { title: { display: true, text: '評価損益合計' } }
                 }
             }
         });
@@ -409,120 +444,6 @@
                 }
             });
         }
-    </script>
-    <script src="//cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-    // 履歴番号で昇順ソート
-    let chartRaw = <?php echo json_encode(array_map(function($row){
-        return [
-            '履歴番号' => $row['履歴番号'],
-            '金額_合計' => (float)($row['金額_合計'] ?? 0)
-        ];
-    }, $assets ?? [])); ?>;
-    chartRaw.sort((a, b) => a['履歴番号'] - b['履歴番号']);
-    const chartLabels = chartRaw.map(row => row['履歴番号']);
-    const chartData = chartRaw.map(row => row['金額_合計']);
-    if (chartLabels.length > 0) {
-        const ctx = document.getElementById('profitChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    label: '金額合計',
-                    data: chartData,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    fill: true,
-                    tension: 0.2
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { title: { display: true, text: '履歴番号' }, reverse: false },
-                    y: { title: { display: true, text: '金額合計' } }
-                }
-            }
-        });
-    }
-
-    // 資産区分割合 円グラフ
-    let ratioRaw = <?php echo json_encode($assetRatios ?? []); ?>;
-    const ratioLabels = ratioRaw.map(row => row['資産区分略名']);
-    const ratioData = ratioRaw.map(row => Number(row['金額']));
-    const ratioColors = [
-        '#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc949', '#af7aa1', '#ff9da7', '#9c755f', '#bab0ab'
-    ];
-    if (ratioLabels.length > 0) {
-        const ctx2 = document.getElementById('ratioChart').getContext('2d');
-        new Chart(ctx2, {
-            type: 'pie',
-            data: {
-                labels: ratioLabels,
-                datasets: [{
-                    data: ratioData,
-                    backgroundColor: ratioColors,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'right' },
-                    tooltip: {
-                        enabled: true,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed;
-                                const total = context.chart._metasets[0].total || context.dataset.data.reduce((a,b)=>a+b,0);
-                                const percent = total ? (value / total * 100).toFixed(1) : 0;
-                                return `${label}: ${value.toLocaleString()}円 (${percent}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // 国内外区分割合 円グラフ
-    let countryRaw = <?php echo json_encode($assetRatioCountries ?? []); ?>;
-    const countryLabels = countryRaw.map(row => row['国内外区分コード名']);
-    const countryData = countryRaw.map(row => Number(row['金額']));
-    const countryColors = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2'];
-    if (countryLabels.length > 0) {
-        const ctx3 = document.getElementById('countryRatioChart').getContext('2d');
-        new Chart(ctx3, {
-            type: 'pie',
-            data: {
-                labels: countryLabels,
-                datasets: [{
-                    data: countryData,
-                    backgroundColor: countryColors,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'right' },
-                    tooltip: {
-                        enabled: true,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed;
-                                const total = context.chart._metasets[0].total || context.dataset.data.reduce((a,b)=>a+b,0);
-                                const percent = total ? (value / total * 100).toFixed(1) : 0;
-                                return `${label}: ${value.toLocaleString()}円 (${percent}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
     </script>
 </body>
 </html>

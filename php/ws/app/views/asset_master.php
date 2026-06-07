@@ -13,7 +13,7 @@
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=main'">戻る</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=add_asset_master'">追加</button>
     </div>
-    <div style="max-height: 700px; overflow-y: auto; margin-top: 50px;">
+    <div style="max-height: 700px; overflow-y: auto; margin-top: 30px;">
     <table class="table table-hover table-sm" style="width: 100%;">
         <thead style="position: sticky; top: 0; background: white;">
             <?php

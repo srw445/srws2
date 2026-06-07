@@ -26,6 +26,20 @@ class VideoRecord {
         }
     }
 
+    public function getVideoRecordTotal($userId) {
+        try {
+            $pdo = Database::getInstance();
+            $sql = $this->loadSql('get_video_record_total.sql');
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$userId]);
+            return $stmt->fetch() ?: [];
+        } catch (PDOException $e) {
+            return [];
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
     public function getVideoRecordById($id, $userId) {
         try {
             $pdo = Database::getInstance();

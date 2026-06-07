@@ -15,6 +15,7 @@ class VideoController {
         $order = $_GET['order'] ?? 'DESC';
         $model = new VideoRecord();
         $records = $model->getVideoRecords($userId, $sort, $order);
+        $totals = $model->getVideoRecordTotal($userId);
         include __DIR__ . '/../views/video_records.php';
     }
 

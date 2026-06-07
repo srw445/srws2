@@ -61,6 +61,11 @@ require_once '../app/controllers/AssetSummaryController.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
 
+if (!in_array($action, ['login', 'authenticate'], true) && empty($_SESSION['user_id'])) {
+    header('Location: ?action=login');
+    exit;
+}
+
 if (isset($routes[$action])) {
     [$controllerClass, $method] = $routes[$action];
     $controller = new $controllerClass();
