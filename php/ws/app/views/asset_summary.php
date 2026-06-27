@@ -56,16 +56,29 @@
                                     </form>';
                                 } else {
                                     $val = $row[$col];
+                                    $negativeColorTargets = ['評価損益_合計', '前回比', '前回比割合'];
+                                    $isNegativeValue = in_array($col, $negativeColorTargets, true)
+                                        && (
+                                            (is_numeric($val) && (float)$val < 0)
+                                            || (!is_numeric($val) && preg_match('/^\s*-/u', (string)$val))
+                                        );
+
                                     if ((
                                         $col === '金額_合計' ||
                                         $col === '評価損益_合計' ||
                                         preg_match('/(金額|損益|現金|株式|仮想通貨|年金|コモディティ|比)$/u', $col)
                                     ) && is_numeric($val)) {
-                                        echo number_format($val);
+                                        $displayVal = number_format($val);
                                     } elseif (preg_match('/割合$/u', $col)) {
-                                        echo htmlspecialchars($val);
+                                        $displayVal = htmlspecialchars($val);
                                     } else {
-                                        echo htmlspecialchars($val);
+                                        $displayVal = htmlspecialchars($val);
+                                    }
+
+                                    if ($isNegativeValue) {
+                                        echo '<span class="text-danger">' . $displayVal . '</span>';
+                                    } else {
+                                        echo $displayVal;
                                     }
                                 }
                                 ?>
@@ -116,9 +129,9 @@
                             <td><?= htmlspecialchars($row['資産コード']) ?></td>
                             <td><?= htmlspecialchars($row['資産略名']) ?></td>
                             <td><?= number_format($row['金額']) ?></td>
-                            <td><?= isset($row['前回比']) ? number_format($row['前回比']) : '' ?></td>
-                            <td><?= number_format($row['評価損益']) ?></td>
-                            <td><?= isset($row['評価損益割合']) ? htmlspecialchars($row['評価損益割合']) : '' ?></td>
+                            <td class="<?= (isset($row['前回比']) && is_numeric($row['前回比']) && (float)$row['前回比'] < 0) ? 'text-danger' : '' ?>"><?= isset($row['前回比']) ? number_format($row['前回比']) : '' ?></td>
+                            <td class="<?= (is_numeric($row['評価損益']) && (float)$row['評価損益'] < 0) ? 'text-danger' : '' ?>"><?= number_format($row['評価損益']) ?></td>
+                            <td class="<?= (isset($row['評価損益割合']) && preg_match('/^\s*-/u', (string)$row['評価損益割合'])) ? 'text-danger' : '' ?>"><?= isset($row['評価損益割合']) ? htmlspecialchars($row['評価損益割合']) : '' ?></td>
                             <td><?= htmlspecialchars($row['国内外区分コード名']) ?></td>
                             <td><?= htmlspecialchars($row['通貨区分コード名']) ?></td>
                             <td><?= htmlspecialchars($row['長短区分コード名']) ?></td>
@@ -132,19 +145,6 @@
         </table>
         </div>
     </div>
-    </div>
-    <div class="mt-4" style="max-width:1600px;">
-        <h5>資産推移</h5>
-        <div class="d-flex flex-column" style="gap: 16px;">
-            <div>
-                <h6>金額合計</h6>
-                <canvas id="profitChart" width="1200" height="260"></canvas>
-            </div>
-            <div>
-                <h6>評価損益合計</h6>
-                <canvas id="profitLossChart" width="1200" height="260"></canvas>
-            </div>
-        </div>
     </div>
     <div class="mt-4 d-flex" style="gap: 32px;">
         <div style="max-width:400px;">
@@ -193,6 +193,23 @@
             <canvas id="accountRatioChart" width="350" height="200"></canvas>
         </div>
     </div>
+    <div class="mt-4" style="max-width:1600px;">
+        <h5>資産推移</h5>
+        <div class="d-flex flex-column" style="gap: 16px;">
+            <div>
+                <h6>金額合計</h6>
+                <canvas id="profitChart" width="1200" height="260"></canvas>
+            </div>
+            <div>
+                <h6>評価損益合計</h6>
+                <canvas id="profitLossChart" width="1200" height="260"></canvas>
+            </div>
+            <div>
+                <h6>前回比</h6>
+                <canvas id="diffChart" width="1200" height="260"></canvas>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -201,13 +218,15 @@
         return [
             '履歴番号' => $row['履歴番号'],
             '金額_合計' => (float)($row['金額_合計'] ?? 0),
-            '評価損益_合計' => (float)($row['評価損益_合計'] ?? 0)
+            '評価損益_合計' => (float)($row['評価損益_合計'] ?? 0),
+            '前回比' => (float)($row['前回比'] ?? 0)
         ];
     }, $assets ?? [])); ?>;
     chartRaw.sort((a, b) => a['履歴番号'] - b['履歴番号']);
     const chartLabels = chartRaw.map(row => row['履歴番号']);
     const chartData = chartRaw.map(row => row['金額_合計']);
     const chartProfitData = chartRaw.map(row => row['評価損益_合計']);
+    const chartDiffData = chartRaw.map(row => Number(row['履歴番号']) === 1 ? 0 : Number(row['前回比'] ?? 0));
     if (chartLabels.length > 0) {
         const amountCtx = document.getElementById('profitChart').getContext('2d');
         new Chart(amountCtx, {
@@ -253,6 +272,30 @@
                 scales: {
                     x: { title: { display: true, text: '履歴番号' }, reverse: false },
                     y: { title: { display: true, text: '評価損益合計' } }
+                }
+            }
+        });
+
+        const diffCtx = document.getElementById('diffChart').getContext('2d');
+        new Chart(diffCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: '前回比',
+                    data: chartDiffData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { title: { display: true, text: '履歴番号' }, reverse: false },
+                    y: { title: { display: true, text: '前回比' } }
                 }
             }
         });

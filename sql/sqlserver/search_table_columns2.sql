@@ -29,7 +29,7 @@ begin
 	set @query = @query + 'inner join sys.columns as c ';
 	set @query = @query + 'on t.object_id = c.object_id ';
 	set @query = @query + 'where t.name like ''' + @search_table + ''' ';
-	set @query = @query + 'and c.name like ''' + @search_table + ''' ';
+	set @query = @query + 'and c.name like ''' + @search_column + ''' ';
 	fetch next from cur_db
 	into @cur_db
 end

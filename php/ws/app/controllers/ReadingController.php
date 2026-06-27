@@ -23,6 +23,7 @@ class ReadingController {
         $userId = $_SESSION['user_id'] ?? '';
         $records = $readingRecordModel->getReadingRecords($userId, $sort, $order);
         $totals = $readingRecordModel->getReadingRecordTotal($userId);
+        $authorCounts = $readingRecordModel->getAuthorReadingCountTop10($userId);
         // ビューにデータを渡す
         include '../app/views/reading_records.php';
     }

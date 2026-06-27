@@ -39,6 +39,20 @@ class ReadingRecord {
         }
     }
 
+    public function getAuthorReadingCountTop10($userId) {
+        try {
+            $pdo = Database::getInstance();
+            $sql = $this->loadSql('get_reading_record_author_count_top10.sql');
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$userId]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            return [];
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
     public function getReadingRecordById($id, $userId) {
         try {
             $pdo = Database::getInstance();
