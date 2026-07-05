@@ -24,7 +24,22 @@
         <div class="alert alert-info" role="alert"><?php echo htmlspecialchars($_SESSION['freee_import_message']); unset($_SESSION['freee_import_message']); ?></div>
     <?php endif; ?>
     <h2>freee取引確認</h2>
-    <?php $freeeTransactions = $freeeTransactions ?? []; $accountSummaries = $accountSummaries ?? []; $selectedMonth = $selectedMonth ?? date('Y-m'); ?>
+    <?php
+        $freeeTransactions = $freeeTransactions ?? [];
+        $accountSummaries = $accountSummaries ?? [];
+        $selectedMonth = $selectedMonth ?? date('Y-m');
+        $currentSort = $_GET['sort'] ?? '発生日';
+        $currentOrder = strtoupper($_GET['order'] ?? 'DESC');
+        $detailHeaders = [
+            '取込番号' => '取込番号',
+            '収支区分' => '収支区分',
+            '発生日' => '発生日',
+            '取引先' => '取引先',
+            '勘定科目' => '勘定科目',
+            '金額' => '金額',
+            '備考' => '備考',
+        ];
+    ?>
     <?php
         $monthBase = DateTimeImmutable::createFromFormat('Y-m', $selectedMonth) ?: new DateTimeImmutable($selectedMonth . '-01');
         $prevMonth = $monthBase->modify('-1 month')->format('Y-m');
@@ -89,15 +104,15 @@
         <h5 class="mb-2">取引明細</h5>
         <table class="table table-hover table-sm">
             <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
-                <tr>
-                    <th>取込番号</th>
-                    <th>収支区分</th>
-                    <th>発生日</th>
-                    <th>取引先</th>
-                    <th>勘定科目</th>
-                    <th>金額</th>
-                    <th>備考</th>
-                </tr>
+                <?php
+                    echo '<tr>';
+                    foreach ($detailHeaders as $key => $label) {
+                        $nextOrder = ($currentSort === $key && $currentOrder === 'ASC') ? 'DESC' : 'ASC';
+                        $href = '?action=freee_transaction&month=' . urlencode($selectedMonth) . '&sort=' . urlencode($key) . '&order=' . $nextOrder;
+                        echo '<th><a href="' . $href . '">' . htmlspecialchars($label) . '</a></th>';
+                    }
+                    echo '</tr>';
+                ?>
             </thead>
             <tbody>
                 <?php if (!empty($freeeTransactions)): ?>

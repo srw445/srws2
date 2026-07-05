@@ -3,6 +3,31 @@ require_once __DIR__ . '/../models/FreeeTransaction.php';
 require_once __DIR__ . '/../models/Database.php';
 
 class FreeeTransactionController {
+    private function sortFreeeTransactions(array &$rows, string $sortKey, string $sortOrder): void {
+        $allowedSortKeys = ['取込番号', '収支区分', '発生日', '取引先', '勘定科目', '金額', '備考'];
+        if (!in_array($sortKey, $allowedSortKeys, true)) {
+            $sortKey = '発生日';
+        }
+        $sortOrder = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+
+        usort($rows, static function ($a, $b) use ($sortKey, $sortOrder) {
+            $left = $a[$sortKey] ?? null;
+            $right = $b[$sortKey] ?? null;
+
+            if ($sortKey === '取込番号' || $sortKey === '金額') {
+                $cmp = (float)$left <=> (float)$right;
+            } elseif ($sortKey === '発生日') {
+                $leftTime = strtotime((string)$left) ?: 0;
+                $rightTime = strtotime((string)$right) ?: 0;
+                $cmp = $leftTime <=> $rightTime;
+            } else {
+                $cmp = strcmp((string)$left, (string)$right);
+            }
+
+            return $sortOrder === 'ASC' ? $cmp : -$cmp;
+        });
+    }
+
     public function index() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -10,6 +35,8 @@ class FreeeTransactionController {
         $freeeTransactions = [];
         $accountSummaries = [];
         $selectedMonth = $_GET['month'] ?? date('Y-m');
+        $currentSort = $_GET['sort'] ?? '発生日';
+        $currentOrder = strtoupper($_GET['order'] ?? 'DESC');
         try {
             $pdo = Database::getInstance();
             $sql = file_get_contents(__DIR__ . '/../../../ws/sql/get_latest_freee_transactions.sql');
@@ -17,6 +44,7 @@ class FreeeTransactionController {
             $userId = $_SESSION['user_id'] ?? '';
             $stmt->execute([$userId, $userId, $selectedMonth]);
             $freeeTransactions = $stmt->fetchAll();
+            $this->sortFreeeTransactions($freeeTransactions, $currentSort, $currentOrder);
 
             $summarySql = file_get_contents(__DIR__ . '/../../../ws/sql/get_freee_transaction_account_summary.sql');
             $summaryStmt = $pdo->prepare($summarySql);

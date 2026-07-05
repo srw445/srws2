@@ -18,6 +18,7 @@ require_once '../app/controllers/AssetMasterController.php';
 require_once '../app/controllers/RssFeedController.php';
 require_once '../app/controllers/AssetSummaryController.php';
 require_once '../app/controllers/FreeeTransactionController.php';
+require_once '../app/controllers/ResidentTaxController.php';
 
  $routes = [
     'asset_master' => [AssetMasterController::class, 'index'],
@@ -61,6 +62,7 @@ require_once '../app/controllers/FreeeTransactionController.php';
     'freee_transaction' => [FreeeTransactionController::class, 'index'],
     'freee_transaction_summary' => [FreeeTransactionController::class, 'summary'],
     'import_freee_transaction' => [FreeeTransactionController::class, 'import_freee_transaction'],
+    'resident_tax' => [ResidentTaxController::class, 'index'],
 ];
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
