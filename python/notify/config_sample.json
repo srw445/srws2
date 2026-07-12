@@ -3,6 +3,7 @@
     "remarks": "Monday / Tuesday / Wednesday / Thursday / Friday / Saturday / Sunday / Everyday",
     "message": "缶・びん・ペットボトルの回収日です。",
     "days": ["Sunday"],
-    "time": "21:00"
+    "time": "21:00",
+    "audio": "001.wav"
   }
 ]
