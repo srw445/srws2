@@ -211,22 +211,75 @@
         </div>
     </div>
 
+    <div class="mt-4" style="max-width:1600px;">
+        <h5>オルカン・S&P500・FANG+推移</h5>
+        <div class="d-flex flex-column" style="gap: 16px;">
+            <div>
+                <h6>金額</h6>
+                <canvas id="investmentAmountChart" width="1200" height="260"></canvas>
+            </div>
+            <div>
+                <h6>評価損益(金額)</h6>
+                <canvas id="investmentProfitChart" width="1200" height="260"></canvas>
+            </div>
+            <div>
+                <h6>評価損益(%)</h6>
+                <canvas id="investmentProfitRatioChart" width="1200" height="260"></canvas>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    // 履歴番号で昇順ソート
+    // 履歴番号で昇順ソートし、表示は年月日を使う
     let chartRaw = <?php echo json_encode(array_map(function($row){
         return [
             '履歴番号' => $row['履歴番号'],
+            '年月日' => $row['年月日'] ?? '',
             '金額_合計' => (float)($row['金額_合計'] ?? 0),
             '評価損益_合計' => (float)($row['評価損益_合計'] ?? 0),
             '前回比' => (float)($row['前回比'] ?? 0)
         ];
     }, $assets ?? [])); ?>;
     chartRaw.sort((a, b) => a['履歴番号'] - b['履歴番号']);
-    const chartLabels = chartRaw.map(row => row['履歴番号']);
+    const chartLabels = chartRaw.map(row => row['年月日'] || row['履歴番号']);
     const chartData = chartRaw.map(row => row['金額_合計']);
     const chartProfitData = chartRaw.map(row => row['評価損益_合計']);
     const chartDiffData = chartRaw.map(row => Number(row['履歴番号']) === 1 ? 0 : Number(row['前回比'] ?? 0));
+
+    const investmentTrendRaw = <?php echo json_encode(array_map(function($row){
+        return [
+            '履歴番号' => $row['履歴番号'],
+            '年月日' => $row['年月日'],
+            'ALLC_金額' => (float)($row['ALLC_金額'] ?? 0),
+            'ALLC_損益金額' => (float)($row['ALLC_損益金額'] ?? 0),
+            'ALLC_損益割合' => (float)($row['ALLC_損益割合'] ?? 0),
+            'SP500_金額' => (float)($row['SP500_金額'] ?? 0),
+            'SP500_損益金額' => (float)($row['SP500_損益金額'] ?? 0),
+            'SP500_損益割合' => (float)($row['SP500_損益割合'] ?? 0),
+            'FANG_金額' => (float)($row['FANG_金額'] ?? 0),
+            'FANG_損益金額' => (float)($row['FANG_損益金額'] ?? 0),
+            'FANG_損益割合' => (float)($row['FANG_損益割合'] ?? 0),
+        ];
+    }, $assetTrendRows ?? [])); ?>;
+    investmentTrendRaw.sort((a, b) => Number(a['履歴番号']) - Number(b['履歴番号']));
+    const investmentLabels = investmentTrendRaw.map(row => row['年月日']);
+    const investmentAllcAmount = investmentTrendRaw.map(row => row['ALLC_金額']);
+    const investmentSp500Amount = investmentTrendRaw.map(row => row['SP500_金額']);
+    const investmentFangAmount = investmentTrendRaw.map(row => row['FANG_金額']);
+    const investmentAllcProfit = investmentTrendRaw.map(row => row['ALLC_損益金額']);
+    const investmentSp500Profit = investmentTrendRaw.map(row => row['SP500_損益金額']);
+    const investmentFangProfit = investmentTrendRaw.map(row => row['FANG_損益金額']);
+    const investmentAllcProfitRatio = investmentTrendRaw.map(row => Number(row['ALLC_損益割合']) * 100);
+    const investmentSp500ProfitRatio = investmentTrendRaw.map(row => Number(row['SP500_損益割合']) * 100);
+    const investmentFangProfitRatio = investmentTrendRaw.map(row => Number(row['FANG_損益割合']) * 100);
+
+    const investmentColors = {
+        allc: 'rgba(54, 162, 235, 1)',
+        sp500: 'rgba(255, 159, 64, 1)',
+        fang: 'rgba(75, 192, 192, 1)'
+    };
+
     if (chartLabels.length > 0) {
         const amountCtx = document.getElementById('profitChart').getContext('2d');
         new Chart(amountCtx, {
@@ -246,7 +299,7 @@
                 responsive: true,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { title: { display: true, text: '履歴番号' }, reverse: false },
+                    x: { title: { display: true, text: '年月日' }, reverse: false },
                     y: { title: { display: true, text: '金額合計' } }
                 }
             }
@@ -270,7 +323,7 @@
                 responsive: true,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { title: { display: true, text: '履歴番号' }, reverse: false },
+                    x: { title: { display: true, text: '年月日' }, reverse: false },
                     y: { title: { display: true, text: '評価損益合計' } }
                 }
             }
@@ -294,8 +347,139 @@
                 responsive: true,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { title: { display: true, text: '履歴番号' }, reverse: false },
+                    x: { title: { display: true, text: '年月日' }, reverse: false },
                     y: { title: { display: true, text: '前回比' } }
+                }
+            }
+        });
+    }
+
+    if (investmentLabels.length > 0) {
+        const investmentAmountCtx = document.getElementById('investmentAmountChart').getContext('2d');
+        new Chart(investmentAmountCtx, {
+            type: 'line',
+            data: {
+                labels: investmentLabels,
+                datasets: [
+                    {
+                        label: '全世界株式（つみたて）',
+                        data: investmentAllcAmount,
+                        borderColor: investmentColors.allc,
+                        backgroundColor: 'rgba(54, 162, 235, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'S&P500（つみたて）',
+                        data: investmentSp500Amount,
+                        borderColor: investmentColors.sp500,
+                        backgroundColor: 'rgba(255, 159, 64, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'FANG+（つみたて）',
+                        data: investmentFangAmount,
+                        borderColor: investmentColors.fang,
+                        backgroundColor: 'rgba(75, 192, 192, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: {
+                    x: { title: { display: true, text: '年月日' } },
+                    y: { title: { display: true, text: '金額' }, ticks: { callback: (value) => Number(value).toLocaleString() } }
+                }
+            }
+        });
+
+        const investmentProfitCtx = document.getElementById('investmentProfitChart').getContext('2d');
+        new Chart(investmentProfitCtx, {
+            type: 'line',
+            data: {
+                labels: investmentLabels,
+                datasets: [
+                    {
+                        label: '全世界株式（つみたて）',
+                        data: investmentAllcProfit,
+                        borderColor: investmentColors.allc,
+                        backgroundColor: 'rgba(54, 162, 235, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'S&P500（つみたて）',
+                        data: investmentSp500Profit,
+                        borderColor: investmentColors.sp500,
+                        backgroundColor: 'rgba(255, 159, 64, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'FANG+（つみたて）',
+                        data: investmentFangProfit,
+                        borderColor: investmentColors.fang,
+                        backgroundColor: 'rgba(75, 192, 192, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: {
+                    x: { title: { display: true, text: '年月日' } },
+                    y: { title: { display: true, text: '評価損益' }, ticks: { callback: (value) => Number(value).toLocaleString() } }
+                }
+            }
+        });
+
+        const investmentProfitRatioCtx = document.getElementById('investmentProfitRatioChart').getContext('2d');
+        new Chart(investmentProfitRatioCtx, {
+            type: 'line',
+            data: {
+                labels: investmentLabels,
+                datasets: [
+                    {
+                        label: '全世界株式（つみたて）',
+                        data: investmentAllcProfitRatio,
+                        borderColor: investmentColors.allc,
+                        backgroundColor: 'rgba(54, 162, 235, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'S&P500（つみたて）',
+                        data: investmentSp500ProfitRatio,
+                        borderColor: investmentColors.sp500,
+                        backgroundColor: 'rgba(255, 159, 64, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'FANG+（つみたて）',
+                        data: investmentFangProfitRatio,
+                        borderColor: investmentColors.fang,
+                        backgroundColor: 'rgba(75, 192, 192, 0.15)',
+                        fill: false,
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: {
+                    x: { title: { display: true, text: '年月日' } },
+                    y: {
+                        title: { display: true, text: '損益割合(%)' },
+                        ticks: { callback: (value) => `${Number(value).toFixed(1)}%` }
+                    }
                 }
             }
         });

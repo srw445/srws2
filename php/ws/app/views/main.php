@@ -28,6 +28,7 @@
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=freee_transaction'">freee取引確認</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=freee_transaction_summary'">freee取引確認(集計)</button>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=resident_tax'">住民税</button>
+        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=calendar'">カレンダー</button>
     </div>
     <!-- ログアウトボタンを一番下に配置 -->
     <div class="mt-5 d-flex justify-content-start">

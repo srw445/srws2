@@ -11,6 +11,16 @@ class AssetSummaryController {
     public function index() {
         $pdo = Database::getInstance();
         $assets = AssetSummary::getAll($pdo);
+        $assetTrendRows = [];
+        try {
+            $sql = file_get_contents(__DIR__ . '/../../../ws/sql/get_asset_trend.sql');
+            if ($sql !== false && trim($sql) !== '') {
+                $stmt = $pdo->query($sql);
+                $assetTrendRows = $stmt->fetchAll();
+            }
+        } catch (PDOException $e) {
+            $assetTrendRows = [];
+        }
         // 最大履歴番号を取得
         $historyNo = isset($_GET['history_no']) ? $_GET['history_no'] : null;
         if ($historyNo === null && !empty($assets)) {

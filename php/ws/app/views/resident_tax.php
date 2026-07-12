@@ -82,8 +82,21 @@
     <div class="mt-4" style="max-width: 1800px;">
         <h5>推移チャート</h5>
         <?php if (!empty($chartLabels)): ?>
-            <div class="bg-white p-3 border rounded" style="height: 360px;">
-                <canvas id="residentTaxTrendChart"></canvas>
+            <div>
+                <div class="bg-white p-3 border rounded" style="height: 320px;">
+                    <div class="fw-bold mb-2">総所得金額等</div>
+                    <canvas id="residentTaxTotalIncomeChart"></canvas>
+                </div>
+                <br>
+                <div class="bg-white p-3 border rounded" style="height: 320px;">
+                    <div class="fw-bold mb-2">所得控除合計</div>
+                    <canvas id="residentTaxDeductionTotalChart"></canvas>
+                </div>
+                <br>
+                <div class="bg-white p-3 border rounded" style="height: 320px;">
+                    <div class="fw-bold mb-2">年税額</div>
+                    <canvas id="residentTaxAnnualTaxChart"></canvas>
+                </div>
             </div>
         <?php else: ?>
             <div class="text-muted">チャート表示用のデータがありません</div>
@@ -98,34 +111,22 @@
             const residentTaxDeductionTotal = <?= json_encode($chartDeductionTotal) ?>;
             const residentTaxAnnualTax = <?= json_encode($chartAnnualTax) ?>;
 
-            const residentTaxCtx = document.getElementById('residentTaxTrendChart');
-            if (residentTaxCtx) {
-                new Chart(residentTaxCtx, {
+            const buildResidentTaxChart = (elementId, label, data, borderColor, backgroundColor) => {
+                const chartElement = document.getElementById(elementId);
+                if (!chartElement) {
+                    return;
+                }
+
+                new Chart(chartElement, {
                     type: 'line',
                     data: {
                         labels: residentTaxChartLabels,
                         datasets: [
                             {
-                                label: '総所得金額等',
-                                data: residentTaxTotalIncome,
-                                borderColor: '#0d6efd',
-                                backgroundColor: 'rgba(13, 110, 253, 0.15)',
-                                tension: 0.2,
-                                fill: false
-                            },
-                            {
-                                label: '所得控除合計',
-                                data: residentTaxDeductionTotal,
-                                borderColor: '#198754',
-                                backgroundColor: 'rgba(25, 135, 84, 0.15)',
-                                tension: 0.2,
-                                fill: false
-                            },
-                            {
-                                label: '年税額',
-                                data: residentTaxAnnualTax,
-                                borderColor: '#dc3545',
-                                backgroundColor: 'rgba(220, 53, 69, 0.15)',
+                                label: label,
+                                data: data,
+                                borderColor: borderColor,
+                                backgroundColor: backgroundColor,
                                 tension: 0.2,
                                 fill: false
                             }
@@ -147,7 +148,11 @@
                         }
                     }
                 });
-            }
+            };
+
+            buildResidentTaxChart('residentTaxTotalIncomeChart', '総所得金額等', residentTaxTotalIncome, '#0d6efd', 'rgba(13, 110, 253, 0.15)');
+            buildResidentTaxChart('residentTaxDeductionTotalChart', '所得控除合計', residentTaxDeductionTotal, '#198754', 'rgba(25, 135, 84, 0.15)');
+            buildResidentTaxChart('residentTaxAnnualTaxChart', '年税額', residentTaxAnnualTax, '#dc3545', 'rgba(220, 53, 69, 0.15)');
         </script>
     <?php endif; ?>
 </body>
