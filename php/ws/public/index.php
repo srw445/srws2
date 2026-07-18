@@ -20,6 +20,7 @@ require_once '../app/controllers/AssetSummaryController.php';
 require_once '../app/controllers/FreeeTransactionController.php';
 require_once '../app/controllers/ResidentTaxController.php';
 require_once '../app/controllers/CalendarController.php';
+require_once '../app/controllers/ExamStudyController.php';
 
  $routes = [
     'asset_master' => [AssetMasterController::class, 'index'],
@@ -65,6 +66,7 @@ require_once '../app/controllers/CalendarController.php';
     'import_freee_transaction' => [FreeeTransactionController::class, 'import_freee_transaction'],
     'resident_tax' => [ResidentTaxController::class, 'index'],
     'calendar' => [CalendarController::class, 'index'],
+    'exam_study' => [ExamStudyController::class, 'index'],
 ];
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
