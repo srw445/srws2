@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../models/Database.php';
 
 class AssetDetail {
-    public static function getAll($pdo, $historyNo = null) {
+    public static function getAll($pdo, $historyNo = null, $allHistory = false) {
         $sqlPath = realpath(__DIR__ . '/../../sql/get_asset_detail.sql');
         $sql = $sqlPath ? file_get_contents($sqlPath) : '';
         if (!$sql) return [];
@@ -15,12 +15,20 @@ class AssetDetail {
             $filtered[] = $line;
         }
         $sql_no_comments = implode("\n", $filtered);
-        // 履歴番号のWHERE句をパラメータ化
-        $sql_no_comments = preg_replace(
-            "/where 明細\.履歴番号 = [0-9]+/",
-            'where 明細.履歴番号 = :history_no',
-            $sql_no_comments
-        );
+        // 履歴番号のWHERE句を用途に応じて設定
+        if ($allHistory) {
+            $sql_no_comments = preg_replace(
+                "/where 明細\.履歴番号 = [0-9]+/",
+                '',
+                $sql_no_comments
+            );
+        } else {
+            $sql_no_comments = preg_replace(
+                "/where 明細\.履歴番号 = [0-9]+/",
+                'where 明細.履歴番号 = :history_no',
+                $sql_no_comments
+            );
+        }
         // ; で分割しつつ、空白や改行だけのクエリは除外
         $queries = array_filter(array_map('trim', preg_split('/;[\r\n]+/', $sql_no_comments)));
         $result = [];

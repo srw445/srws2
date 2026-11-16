@@ -19,8 +19,7 @@
             $chartSourceRows = array_reverse($residentTaxRows);
             foreach ($chartSourceRows as $row) {
                 $year = (string)($row['西暦'] ?? '');
-                $fiscalYear = (string)($row['年度'] ?? '');
-                $chartLabels[] = $year !== '' ? ($year . '年(' . $fiscalYear . ')') : $fiscalYear;
+                $chartLabels[] = $year;
                 $chartTotalIncome[] = (float)($row['総所得金額等'] ?? 0);
                 $chartDeductionTotal[] = (float)($row['所得控除合計'] ?? 0);
                 $chartAnnualTax[] = (float)($row['年税額'] ?? 0);

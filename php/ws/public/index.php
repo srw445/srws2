@@ -59,6 +59,7 @@ require_once '../app/controllers/ExamStudyController.php';
     'insert_kubun_code' => [KubunCodeController::class, 'insert'],
     'rss_feed' => [RssFeedController::class, 'index'],
     'asset_summary' => [AssetSummaryController::class, 'index'],
+    'asset_details_all' => [AssetSummaryController::class, 'all_details'],
     'import_asset_file' => [AssetSummaryController::class, 'import_asset_file'],
     'delete_asset_manager' => [AssetSummaryController::class, 'delete_asset_manager'],
     'freee_transaction' => [FreeeTransactionController::class, 'index'],

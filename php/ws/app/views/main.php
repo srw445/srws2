@@ -17,19 +17,41 @@
     }
     ?>
     <h2>メインメニュー</h2>
-    <div class="d-flex flex-column gap-2" style="max-width: 300px;">
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=reading_records'">読書記録</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=video_records'">映像記録</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=kubun_codes'">区分コードマスタ</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=rss_feed'">RSSリーダー</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_kubun_master'">資産区分マスタ</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_master'">資産マスタ</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_summary'">資産管理</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=freee_transaction'">freee取引確認</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=freee_transaction_summary'">freee取引確認(集計)</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=resident_tax'">住民税</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=calendar'">カレンダー</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=exam_study'">試験学習</button>
+    <?php
+        $menuButtons = [
+            ['label' => '読書記録', 'action' => 'reading_records'],
+            ['label' => '映像記録', 'action' => 'video_records'],
+            ['label' => '区分コードマスタ', 'action' => 'kubun_codes'],
+            ['label' => 'RSSリーダー', 'action' => 'rss_feed'],
+            ['label' => '資産区分マスタ', 'action' => 'asset_kubun_master'],
+            ['label' => '資産マスタ', 'action' => 'asset_master'],
+            ['label' => '資産管理', 'action' => 'asset_summary'],
+            ['label' => 'freee取引確認', 'action' => 'freee_transaction'],
+            ['label' => 'freee取引確認(集計)', 'action' => 'freee_transaction_summary'],
+            ['label' => '住民税', 'action' => 'resident_tax'],
+            ['label' => 'カレンダー', 'action' => 'calendar'],
+            ['label' => '試験学習', 'action' => 'exam_study'],
+        ];
+    ?>
+    <div class="table-responsive" style="max-width: 1100px;">
+        <table class="table table-bordered align-middle bg-white">
+            <tbody>
+                <?php foreach (array_chunk($menuButtons, 4) as $rowButtons): ?>
+                    <tr>
+                        <?php foreach ($rowButtons as $button): ?>
+                            <td style="width: 25%;">
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="location.href='?action=<?= htmlspecialchars($button['action']) ?>'">
+                                    <?= htmlspecialchars($button['label']) ?>
+                                </button>
+                            </td>
+                        <?php endforeach; ?>
+                        <?php for ($i = count($rowButtons); $i < 4; $i++): ?>
+                            <td style="width: 25%;"></td>
+                        <?php endfor; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
     <!-- ログアウトボタンを一番下に配置 -->
     <div class="mt-5 d-flex justify-content-start">

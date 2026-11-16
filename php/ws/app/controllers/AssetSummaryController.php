@@ -36,6 +36,11 @@ class AssetSummaryController {
         $assetRatioAccounts = AssetRatioAccount::getAll($pdo, $historyNo);
         include __DIR__ . '/../views/asset_summary.php';
     }
+    public function all_details() {
+        $pdo = Database::getInstance();
+        $assetDetails = AssetDetail::getAll($pdo, null, true);
+        include __DIR__ . '/../views/asset_details_all.php';
+    }
     public function delete_asset_manager() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['history_no'])) {
             $historyNo = $_POST['history_no'];

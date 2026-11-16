@@ -18,25 +18,38 @@
                 <input type="file" id="importFile" name="import_file" style="display:none;" onchange="document.getElementById('importForm').submit();">
             </label>
         </form>
+        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_details_all'">資産明細</button>
     </div>
     <div class="mt-4" style="max-width:1600px;">
         <h5>資産集計</h5>
     </div>
-    <div style="max-height: 250px; overflow-y: auto;">
+    <div style="max-width:1600px; max-height: 250px; overflow-y: auto;">
     <table class="table table-hover table-sm" style="margin-bottom:0;">
         <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
             <tr>
                 <?php
-                $excludeCols = ['債券', '債券割合', 'その他', 'その他割合'];
+                $excludeCols = [
+                    '前回比割合',
+                    '現金割合',
+                    '個別株割合',
+                    '投信割合',
+                    '仮想通貨割合',
+                    '年金割合',
+                    'コモディティ割合',
+                    '債券',
+                    '債券割合',
+                    'その他',
+                    'その他割合',
+                ];
                 $displayCols = [];
                 if (!empty($assets)) {
                     foreach (array_keys($assets[0]) as $col) {
                         if (in_array($col, $excludeCols, true)) continue;
                         $displayCols[] = $col;
-                        echo '<th>' . htmlspecialchars($col) . '</th>';
+                        echo '<th class="text-center">' . htmlspecialchars($col) . '</th>';
                     }
                     // 削除ボタン用の列
-                    echo '<th></th>';
+                    echo '<th class="text-center"></th>';
                 }
                 ?>
             </tr>
@@ -46,13 +59,13 @@
                 <?php foreach ($assets as $row): ?>
                     <tr>
                         <?php foreach ($displayCols as $col): ?>
-                            <td>
+                            <td class="text-end">
                                 <?php
                                 if ($col === '履歴番号') {
                                     echo '<form method="get" style="display:inline; margin:0;">
                                         <input type="hidden" name="action" value="asset_summary">
                                         <input type="hidden" name="history_no" value="' . htmlspecialchars($row['履歴番号']) . '">
-                                        <button type="submit" class="btn btn-link p-0">' . htmlspecialchars($row['履歴番号']) . '</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">' . htmlspecialchars($row['履歴番号']) . '</button>
                                     </form>';
                                 } else {
                                     $val = $row[$col];
@@ -63,16 +76,22 @@
                                             || (!is_numeric($val) && preg_match('/^\s*-/u', (string)$val))
                                         );
 
-                                    if ((
+                                    if ($col === '前回比') {
+                                        $displayVal = number_format((float)$val)
+                                            . ' (' . htmlspecialchars((string)($row['前回比割合'] ?? '')) . ')';
+                                    } elseif (in_array($col, ['現金', '個別株', '投信', '仮想通貨', '年金', 'コモディティ'], true)) {
+                                        $displayVal = number_format((float)$val)
+                                            . ' (' . htmlspecialchars((string)($row[$col . '割合'] ?? '')) . ')';
+                                    } elseif ((
                                         $col === '金額_合計' ||
                                         $col === '評価損益_合計' ||
-                                        preg_match('/(金額|損益|現金|株式|仮想通貨|年金|コモディティ|比)$/u', $col)
+                                        preg_match('/(金額|損益|現金|株式|投信|仮想通貨|年金|コモディティ|比)$/u', $col)
                                     ) && is_numeric($val)) {
                                         $displayVal = number_format($val);
                                     } elseif (preg_match('/割合$/u', $col)) {
-                                        $displayVal = htmlspecialchars($val);
+                                        $displayVal = htmlspecialchars((string)($val ?? ''));
                                     } else {
-                                        $displayVal = htmlspecialchars($val);
+                                        $displayVal = htmlspecialchars((string)($val ?? ''));
                                     }
 
                                     if ($isNegativeValue) {
@@ -87,7 +106,7 @@
                         <td>
                             <form method="post" action="?action=delete_asset_manager" style="display:inline; margin:0;" onsubmit="return confirm('本当に削除しますか？');">
                                 <input type="hidden" name="history_no" value="<?= htmlspecialchars($row['履歴番号']) ?>">
-                                <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
                             </form>
                         </td>
                     </tr>
@@ -111,6 +130,7 @@
                     <th>資産略名</th>
                     <th>金額</th>
                     <th>前回比</th>
+                    <th>前回比割合</th>
                     <th>評価損益</th>
                     <th>評価損益割合</th>
                     <th>国内外区分</th>
@@ -130,6 +150,7 @@
                             <td><?= htmlspecialchars($row['資産略名']) ?></td>
                             <td><?= number_format($row['金額']) ?></td>
                             <td class="<?= (isset($row['前回比']) && is_numeric($row['前回比']) && (float)$row['前回比'] < 0) ? 'text-danger' : '' ?>"><?= isset($row['前回比']) ? number_format($row['前回比']) : '' ?></td>
+                            <td class="<?= (isset($row['前回比割合']) && preg_match('/^\s*-/u', (string)$row['前回比割合'])) ? 'text-danger' : '' ?>"><?= isset($row['前回比割合']) ? htmlspecialchars($row['前回比割合']) : '' ?></td>
                             <td class="<?= (is_numeric($row['評価損益']) && (float)$row['評価損益'] < 0) ? 'text-danger' : '' ?>"><?= number_format($row['評価損益']) ?></td>
                             <td class="<?= (isset($row['評価損益割合']) && preg_match('/^\s*-/u', (string)$row['評価損益割合'])) ? 'text-danger' : '' ?>"><?= isset($row['評価損益割合']) ? htmlspecialchars($row['評価損益割合']) : '' ?></td>
                             <td><?= htmlspecialchars($row['国内外区分コード名']) ?></td>
@@ -139,7 +160,7 @@
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr><td colspan="12">データがありません</td></tr>
+                    <tr><td colspan="13">データがありません</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>

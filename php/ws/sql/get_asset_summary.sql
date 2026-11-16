@@ -17,6 +17,7 @@ select
 ,資産.長短区分
 ,明細.金額
 ,明細.評価損益
+,管理.ドル円
 from 資産管理 as 管理
 inner join 資産管理明細 as 明細
 on 管理.履歴番号 = 明細.履歴番号
@@ -37,6 +38,7 @@ create temporary table 資産集計 as
 select
 履歴番号
 ,年月日
+,max(ドル円) as ドル円
 ,sum(金額) as 金額_合計
 ,sum(評価損益) as 評価損益_合計
 from 資産明細
@@ -77,7 +79,20 @@ select
 ,sum(金額) as 金額_合計
 ,sum(評価損益) as 評価損益_合計
 from 資産明細
-where 設定値1 = 'KABU'
+where 設定値1 IN ('KABU')
+group by 履歴番号 ,年月日
+order by 履歴番号 desc,年月日 desc;
+
+-- 資産区分=投信で集計
+drop temporary table if exists 資産集計_投信;
+create temporary table 資産集計_投信 as
+select
+履歴番号
+,年月日
+,sum(金額) as 金額_合計
+,sum(評価損益) as 評価損益_合計
+from 資産明細
+where 設定値1 IN ('TOUSHIN')
 group by 履歴番号 ,年月日
 order by 履歴番号 desc,年月日 desc;
 
@@ -153,11 +168,13 @@ create temporary table 資産集計_結果 as
 select
 集計.履歴番号
 ,集計.年月日
+,集計.ドル円
 ,集計.金額_合計
 ,集計.評価損益_合計
 ,集計.金額_合計 - ifnull(集計_前回.金額_合計 ,0) as 前回比
 ,ifnull(集計_現金.金額_合計 ,0) as 現金
-,ifnull(集計_株式.金額_合計 ,0) as 株式
+,ifnull(集計_株式.金額_合計 ,0) as 個別株
+,ifnull(集計_投信.金額_合計 ,0) as 投信
 ,ifnull(集計_仮想通貨.金額_合計 ,0) as 仮想通貨
 ,ifnull(集計_債券.金額_合計 ,0) as 債券
 ,ifnull(集計_年金.金額_合計 ,0) as 年金
@@ -170,6 +187,8 @@ left join 資産集計_現金 as 集計_現金
 on 集計.履歴番号 = 集計_現金.履歴番号
 left join 資産集計_株式 as 集計_株式
 on 集計.履歴番号 = 集計_株式.履歴番号
+left join 資産集計_投信 as 集計_投信
+on 集計.履歴番号 = 集計_投信.履歴番号
 left join 資産集計_仮想通貨 as 集計_仮想通貨
 on 集計.履歴番号 = 集計_仮想通貨.履歴番号
 left join 資産集計_債券 as 集計_債券
@@ -191,8 +210,10 @@ select
 ,concat(format(前回比 / 金額_合計 * 100, 1), '%') as 前回比割合
 ,現金
 ,concat(format(現金 / 金額_合計 * 100, 1), '%') as 現金割合
-,株式
-,concat(format(株式 / 金額_合計 * 100, 1), '%') as 株式割合  
+,個別株
+,concat(format(個別株 / 金額_合計 * 100, 1), '%') as 個別株割合  
+,投信
+,concat(format(投信 / 金額_合計 * 100, 1), '%') as 投信割合  
 ,仮想通貨
 ,concat(format(仮想通貨 / 金額_合計 * 100, 1), '%') as 仮想通貨割合  
 ,債券
@@ -201,6 +222,7 @@ select
 ,concat(format(年金 / 金額_合計 * 100, 1), '%') as 年金割合
 ,コモディティ
 ,concat(format(コモディティ / 金額_合計 * 100, 1), '%') as コモディティ割合
+,ドル円
 ,その他
 ,concat(format(その他 / 金額_合計 * 100, 1), '%') as その他割合
 from 資産集計_結果
