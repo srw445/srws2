@@ -19,6 +19,7 @@
             </label>
         </form>
         <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_details_all'">資産明細</button>
+        <button type="button" class="btn btn-outline-primary" onclick="location.href='?action=asset_summaries_all'">資産集計</button>
     </div>
     <div class="mt-4" style="max-width:1600px;">
         <h5>資産集計</h5>

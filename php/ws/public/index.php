@@ -60,6 +60,7 @@ require_once '../app/controllers/ExamStudyController.php';
     'rss_feed' => [RssFeedController::class, 'index'],
     'asset_summary' => [AssetSummaryController::class, 'index'],
     'asset_details_all' => [AssetSummaryController::class, 'all_details'],
+    'asset_summaries_all' => [AssetSummaryController::class, 'all_summaries'],
     'import_asset_file' => [AssetSummaryController::class, 'import_asset_file'],
     'delete_asset_manager' => [AssetSummaryController::class, 'delete_asset_manager'],
     'freee_transaction' => [FreeeTransactionController::class, 'index'],

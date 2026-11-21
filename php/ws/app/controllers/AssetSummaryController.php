@@ -41,6 +41,19 @@ class AssetSummaryController {
         $assetDetails = AssetDetail::getAll($pdo, null, true);
         include __DIR__ . '/../views/asset_details_all.php';
     }
+    public function all_summaries() {
+        $pdo = Database::getInstance();
+        $assets = AssetSummary::getAll($pdo);
+        $selectedHistoryNo = (string)($_GET['history_no'] ?? '');
+        $historyNos = array_map('strval', array_column($assets, '履歴番号'));
+        if (!in_array($selectedHistoryNo, $historyNos, true)) {
+            $selectedHistoryNo = '';
+        }
+        $assetCategorySummary = $selectedHistoryNo === ''
+            ? []
+            : AssetSummary::getCategorySummary($pdo, (int)$selectedHistoryNo);
+        include __DIR__ . '/../views/asset_summaries_all.php';
+    }
     public function delete_asset_manager() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['history_no'])) {
             $historyNo = $_POST['history_no'];

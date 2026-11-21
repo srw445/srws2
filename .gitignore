@@ -18,6 +18,7 @@ python/ws_test/results/
 
 *.user
 *.pyc
+*.log
 settings.json
 **/.vs/
 **/bin/
